@@ -1,39 +1,31 @@
-# temporary
-
 ```mermaid
 classDiagram
-    %% モジュールの表現（1つの大きな枠で囲む）
+    %% 概念クラス図の要素
     class MolecularFileHandler {
-        <<module>>  %% モジュールであることを明示
-        - FrcmodParser
-        - ItpHandler
+        <<Concept>> ファイル全般を管理する概念
+        +ファイルの種類を判断
+        +各処理モジュールに振り分け
     }
-
-    %% クラス1: FrcmodParser
     class FrcmodParser {
-        <<class>>  %% クラスであることを明示
-        +read(filepath: str): dict
-        +parse(data: dict): dict
+        <<Concept>> Frcmodファイルの処理
+        +Frcmodフォーマットのデータを解析
+        +必要なパラメータを抽出
     }
-
-    %% クラス2: ItpHandler
     class ItpHandler {
-        <<class>>
-        +read(filepath: str): dict
-        +write(data: dict, filepath: str): void
+        <<Concept>> Itpファイルの処理
+        +GROMACS用のItpファイルを読み書き
+        +データ構造を構築
+    }
+    class ParameterManager {
+        <<Concept>> パラメータ管理
+        +計算条件や物理パラメータの保存
+        +他のクラスに提供
     }
 
-    %% メインクラス: MolecularFileManager
-    class MolecularFileManager {
-        <<class>>
-        +convert_frcmod_to_itp(frcmod_path: str, itp_path: str): void
-        -frcmod_parser: FrcmodParser
-        -itp_handler: ItpHandler
-    }
-
-    %% 関係性を表現する
-    MolecularFileHandler --> FrcmodParser : "uses"
-    MolecularFileHandler --> ItpHandler : "uses"
-    MolecularFileManager --> FrcmodParser : "has-a"
-    MolecularFileManager --> ItpHandler : "has-a"
+    %% クラス間の関係性を記述
+    MolecularFileHandler --> FrcmodParser : uses
+    MolecularFileHandler --> ItpHandler : uses
+    MolecularFileHandler --> ParameterManager : accesses
+    FrcmodParser --> ParameterManager : updates
+    ItpHandler --> ParameterManager : reads
 ```
